@@ -1,0 +1,45 @@
+{
+  "request": {
+    "data": {
+      "range": {
+        "from": "2018-12-03T07:44:59.011Z",
+        "to": "2018-12-04T07:44:59.011Z"
+      },
+      "targets": [
+        {
+          "target": "VS_****",
+          "refId": "A",
+          "type": "timeserie",
+          "table":"sys_****",
+          "filter": "pcmd=*** and gnb=****"
+          
+        },
+        {
+          "target": "upper_50",
+          "refId": "B",
+          "type": "timeserie"
+        },
+        {
+          "target": "upper_95",
+          "refId": "C",
+          "type": "timeserie"
+        }
+      ]
+    }
+  },
+  "response": [
+    {
+      "target": "VS_****",
+      "datapoints": [
+        [
+          861,
+          1543884302000
+        ],
+        [
+          767,
+          1543884352000
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+buildscript {
+
+	repositories {
+		//mavenCentral()
+		maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE")
+	}
+
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.nokia.ca4mn.grafana.plugin'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+project.ext {
+    cucumberVersion = '3.0.0'
+    cucumberProVersion = '2.0.4'
+    log4jVersion='2.8.2'
+}
+
+repositories {
+	//maven { url "https://repo.lab.pl.alcatel-lucent.com:443/maven2" }
+	mavenCentral()
+	maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+}
+
+configurations.all {
+    all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    all*.exclude group: 'log4j', module: 'log4j'
+    all*.exclude module: 'spring-boot-starter-logging'
+    all*.exclude module: "logback-classic"
+    all*.exclude module: "logback-core"
+    all*.exclude module: "gson"
+}
+
+dependencies {
+    //compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    //compile 'org.springframework.boot:spring-boot-starter-cache'
+    compile 'org.springframework.data:spring-data-hadoop:2.5.0.RELEASE'
+ 	  compile 'org.apache.tomcat:tomcat-jdbc'
+    compile ('org.apache.hive:hive-jdbc:1.1.0'){
+		exclude group: 'org.eclipse.jetty.aggregate', module: 'jetty-all'
+    }
+ 	
+ 	
+    // The production code uses the SLF4J logging API at compile time
+    compile ("org.apache.logging.log4j:log4j-api:2.8.2")
+    compile ("org.apache.logging.log4j:log4j-core:2.8.2")
+    compile ("org.apache.logging.log4j:log4j-slf4j-impl:2.8.2")
+    
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile group: 'org.json', name: 'json', version: '20160810'
+    
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile group: 'com.alibaba', name: 'druid', version: '1.1.12'
+        
+    testCompile 'io.cucumber:cucumber-java:'+cucumberVersion
+    testCompile 'io.cucumber:cucumber-junit:'+cucumberVersion
+    testCompile 'io.cucumber:pro-plugin:' + cucumberProVersion
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.awaitility:awaitility:3.1.0'
+
+}

@@ -1,0 +1,73 @@
+{
+  "xhrStatus": "complete",
+  "request": {
+    "method": "POST",
+    "url": "api/datasources/proxy/1/query",
+    "data": {
+      "timezone": "browser",
+      "panelId": 2,
+      "dashboardId": 1,
+      "range": {
+        "from": "2018-12-03T07:44:59.011Z",
+        "to": "2018-12-04T07:44:59.011Z",
+        "raw": {
+          "from": "now-24h",
+          "to": "now"
+        }
+      },
+      "rangeRaw": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "interval": "1m",
+      "intervalMs": 60000,
+      "targets": [
+        {
+          "target": "VS_****",
+          "refId": "A",
+          "type": "timeserie",
+          "table":"sys_****",
+          "filter": "pcmd=*** and gnb=****"
+          
+        },
+        {
+          "target": "upper_50",
+          "refId": "B",
+          "type": "timeserie"
+        },
+        {
+          "target": "upper_95",
+          "refId": "C",
+          "type": "timeserie"
+        }
+      ],
+      "maxDataPoints": 1006,
+      "scopedVars": {
+        "__interval": {
+          "text": "1m",
+          "value": "1m"
+        },
+        "__interval_ms": {
+          "text": 60000,
+          "value": 60000
+        }
+      },
+      "adhocFilters": []
+    }
+  },
+  "response": [
+    {
+      "target": "VS_****",
+      "datapoints": [
+        [
+          861,
+          1543884302000
+        ],
+        [
+          767,
+          1543884352000
+        ]
+      ]
+    }
+  ]
+}

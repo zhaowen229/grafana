@@ -1,0 +1,25 @@
+{
+  "request": {
+    "data": {
+      "range": {
+        "from": "2018-12-13T08:28:01.472Z",
+        "to": "2018-12-13T08:31:01.472Z"
+      },
+      "targets": [
+        {
+          "filter": "1=1",
+          "refId": "AA",
+          "table": "weather_forecast",
+          "target": "air_temperature",
+          "type": "timeserie"
+        }
+      ]
+    }
+  },
+  "response": [
+    {
+      "datapoints": [],
+      "target": "string"
+    }
+  ]
+}
