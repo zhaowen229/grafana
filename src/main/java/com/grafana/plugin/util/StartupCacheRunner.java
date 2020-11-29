@@ -19,40 +19,41 @@ import com.grafana.plugin.service.GrafanaService;
 @Component
 public class StartupCacheRunner implements CommandLineRunner {
 
-    private static Logger logger = LogManager.getLogger(StartupCacheRunner.class);
+	private static Logger logger = LogManager.getLogger(StartupCacheRunner.class);
 
-    @Autowired
-    private GrafanaService grafanaService;
-    @Autowired
-    private CacheManager cacheManager;
-    @Autowired
-    private Targets targets;
+	@Autowired
+	private GrafanaService grafanaService;
+	@Autowired
+	private CacheManager cacheManager;
+	@Autowired
+	private Targets targets;
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void run(String... args) throws Exception {
-        logger.info("program cache start...");
-        Cache cache = cacheManager.getCache("queryHive");
-        /*
-         * 原默认获取cache的方式由于每次启动遍历数据库字段，导致启动太慢，所以，改用“尽量”从文件中读取所有字段
-         */
-        File file = new File(FileToMapUtils.filePath);
-        // 由于表结构不会变，所以：文件若存在，则不执行，节约启动时间
-        if (!file.exists()) {
-            grafanaService.listAllTables();
-            List<String> allTables = cache.get("listAllTables", new ArrayList<String>().getClass());
-            for (String table : allTables) {
-                targets.setTarget(table);
-                grafanaService.describeTable(targets);
-                grafanaService.describeTableForFilter(targets);
-            }
-            Map<String, List<String>> map = (Map<String, List<String>>) cache.getNativeCache();
-            FileToMapUtils.mapToFile(map, file, "");
-        }
-        FileToMapUtils.fileToMap().forEach((k, v) -> {
-            cache.put(k, v);
-        });
-        logger.info("program cache end.");
-        // Object o = cache.getNativeCache();
-    }
+	@Override
+	@SuppressWarnings("unchecked")
+	public void run(String... args) throws Exception {
+		logger.info("program cache start...");
+		Cache cache = cacheManager.getCache("queryHive");
+
+		File file = new File(FileToMapUtils.filePath);
+		// 第一次 启动时文件还未创建 此时 执行查询方法 对数据进行缓存，并把结果存到文件中
+		if (!file.exists()) {
+			grafanaService.listAllTables();
+			List<String> allTables = cache.get("listAllTables", new ArrayList<String>().getClass());
+			for (String table : allTables) {
+				targets.setTarget(table);
+				grafanaService.describeTable(targets);
+				grafanaService.describeTableForFilter(targets);
+			}
+			Map<String, List<String>> map = (Map<String, List<String>>) cache.getNativeCache();
+			FileToMapUtils.mapToFile(map, file, "");
+		}
+
+		// 第二次 重启程序时，文件已经被创建，并保存了查询结果, 在程序启动时执行循环把文件中的数据放到缓存中，
+		// 这样在页面上进行查询操作，执行具体方法时，不需要再重新去表中去查，而是直接取缓存中的数据
+		FileToMapUtils.fileToMap().forEach((k, v) -> {
+			cache.put(k, v);
+		});
+		logger.info("program cache end.");
+		// Object o = cache.getNativeCache();
+	}
 }
